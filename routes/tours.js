@@ -31,4 +31,12 @@ router.patch("/:id", async (req, res) => {
   res.send(tour);
 });
 
+router.delete("/:id", async (req, res) => {
+  const tour = await Tour.findOneAndDelete({ _id: req.params.id });
+  if (!tour)
+    return res.status(404).send("Tour with the given ID was not found.");
+
+  res.send(tour);
+});
+
 module.exports = router;
