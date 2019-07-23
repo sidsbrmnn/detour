@@ -21,4 +21,14 @@ router.post("/", async (req, res) => {
   res.send(tour);
 });
 
+router.patch("/:id", async (req, res) => {
+  const tour = await Tour.findOneAndUpdate({ _id: req.params.id }, req.body, {
+    new: true
+  });
+  if (!tour)
+    return res.status(404).send("Tour with the given ID was not found.");
+
+  res.send(tour);
+});
+
 module.exports = router;
