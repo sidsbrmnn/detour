@@ -28,6 +28,12 @@ tourSchema.pre("save", function(next) {
   next();
 });
 
+tourSchema.pre("update", function(next) {
+  this.slug = slugify(this.name, { lower: true });
+
+  next();
+});
+
 function validateTour(tour) {
   const schema = {
     name: Joi.string()
