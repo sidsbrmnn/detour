@@ -1,3 +1,4 @@
+const Joi = require("@hapi/joi");
 const { Schema, model } = require("mongoose");
 const slugify = require("slugify");
 
@@ -27,6 +28,37 @@ tourSchema.pre("save", function(next) {
   next();
 });
 
+function validateTour(tour) {
+  const schema = {
+    name: Joi.string()
+      .min(10)
+      .max(40)
+      .required(),
+    duration: Joi.number()
+      .min(5)
+      .max(60)
+      .required(),
+    groupSize: Joi.number()
+      .min(1)
+      .max(20)
+      .required(),
+    difficulty: Joi.string()
+      .valid("beginner", "amateur", "pro")
+      .required(),
+    price: Joi.number()
+      .min(0)
+      .required(),
+    description: Joi.string()
+      .min(100)
+      .max(600)
+      .required(),
+    cover: Joi.string().required(),
+    startDate: Joi.date().required()
+  };
+
+  return Joi.validate(tour, schema);
+}
+
 const Tour = model("Tour", tourSchema);
 
-module.exports = Tour;
+module.exports = { Tour, validateTour };
