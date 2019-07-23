@@ -1,6 +1,6 @@
 const express = require("express");
 
-const validateObjectId = require("../middlewares/validateObjectId");
+const { objectId } = require("../middlewares/validate");
 const Tour = require("../models/tour");
 
 const router = express.Router();
@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
   res.send(tour);
 });
 
-router.patch("/:id", validateObjectId, async (req, res) => {
+router.patch("/:id", objectId, async (req, res) => {
   const tour = await Tour.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true
   });
@@ -32,7 +32,7 @@ router.patch("/:id", validateObjectId, async (req, res) => {
   res.send(tour);
 });
 
-router.delete("/:id", validateObjectId, async (req, res) => {
+router.delete("/:id", objectId, async (req, res) => {
   const tour = await Tour.findOneAndDelete({ _id: req.params.id });
   if (!tour)
     return res.status(404).send("Tour with the given ID was not found.");
@@ -40,7 +40,7 @@ router.delete("/:id", validateObjectId, async (req, res) => {
   res.send(tour);
 });
 
-router.get("/:id", validateObjectId, async (req, res) => {
+router.get("/:id", objectId, async (req, res) => {
   const tour = await Tour.findOne({ _id: req.params.id });
   if (!tour)
     return res.status(404).send("Tour with the given ID was not found.");
