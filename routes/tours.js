@@ -36,8 +36,7 @@ router.patch(
     const tour = await Tour.findOneAndUpdate({ _id: req.params.id }, req.body, {
       new: true
     });
-    if (!tour)
-      return res.status(404).send("Tour with the given ID was not found.");
+    if (!tour) return res.status(404).send("Invalid Id.");
 
     res.send(tour);
   })
@@ -48,20 +47,17 @@ router.delete(
   objectId,
   asyncHandler(async (req, res) => {
     const tour = await Tour.findOneAndDelete({ _id: req.params.id });
-    if (!tour)
-      return res.status(404).send("Tour with the given ID was not found.");
+    if (!tour) return res.status(404).send("Invalid Id.");
 
     res.send(tour);
   })
 );
 
 router.get(
-  "/:id",
-  objectId,
+  "/:slug",
   asyncHandler(async (req, res) => {
-    const tour = await Tour.findOne({ _id: req.params.id });
-    if (!tour)
-      return res.status(404).send("Tour with the given ID was not found.");
+    const tour = await Tour.findOne({ slug: req.params.slug });
+    if (!tour) return res.status(404).send("Tour not found.");
 
     res.send(tour);
   })
