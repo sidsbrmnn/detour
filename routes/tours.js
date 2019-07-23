@@ -1,51 +1,70 @@
 const express = require("express");
 
+const asyncHandler = require("../middlewares/async");
 const { objectId } = require("../middlewares/validate");
 const Tour = require("../models/tour");
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  const tours = await Tour.find({}).sort("name");
+router.get(
+  "/",
+  asyncHandler(async (req, res) => {
+    const tours = await Tour.find({}).sort("name");
 
-  res.send(tours);
-});
+    res.send(tours);
+  })
+);
 
-router.post("/", async (req, res) => {
-  let tour = await Tour.findOne({ name: req.body.name });
-  if (tour)
-    return res.status(400).send("Tour with the given name already exists.");
+router.post(
+  "/",
+  asyncHandler(async (req, res) => {
+    let tour = await Tour.findOne({ name: req.body.name });
+    if (tour)
+      return res.status(400).send("Tour with the given name already exists.");
 
-  tour = new Tour(req.body);
-  await tour.save();
+    tour = new Tour(req.body);
+    await tour.save();
 
-  res.send(tour);
-});
+    res.send(tour);
+  })
+);
 
-router.patch("/:id", objectId, async (req, res) => {
-  const tour = await Tour.findOneAndUpdate({ _id: req.params.id }, req.body, {
-    new: true
-  });
-  if (!tour)
-    return res.status(404).send("Tour with the given ID was not found.");
+router.patch(
+  "/:id",
+  objectId,
+  asyncHandler(async (req, res) => {
+    const tour = await Tour.findOneAndUpdate({ _id: req.params.id }, req.body, {
+      new: true
+    });
+    if (!tour)
+      return res.status(404).send("Tour with the given ID was not found.");
 
-  res.send(tour);
-});
+    res.send(tour);
+  })
+);
 
-router.delete("/:id", objectId, async (req, res) => {
-  const tour = await Tour.findOneAndDelete({ _id: req.params.id });
-  if (!tour)
-    return res.status(404).send("Tour with the given ID was not found.");
+router.delete(
+  "/:id",
+  objectId,
+  asyncHandler(async (req, res) => {
+    const tour = await Tour.findOneAndDelete({ _id: req.params.id });
+    if (!tour)
+      return res.status(404).send("Tour with the given ID was not found.");
 
-  res.send(tour);
-});
+    res.send(tour);
+  })
+);
 
-router.get("/:id", objectId, async (req, res) => {
-  const tour = await Tour.findOne({ _id: req.params.id });
-  if (!tour)
-    return res.status(404).send("Tour with the given ID was not found.");
+router.get(
+  "/:id",
+  objectId,
+  asyncHandler(async (req, res) => {
+    const tour = await Tour.findOne({ _id: req.params.id });
+    if (!tour)
+      return res.status(404).send("Tour with the given ID was not found.");
 
-  res.send(tour);
-});
+    res.send(tour);
+  })
+);
 
 module.exports = router;
