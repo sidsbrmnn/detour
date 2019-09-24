@@ -1,6 +1,7 @@
 const express = require("express");
 
 const asyncHandler = require("../middlewares/async");
+const auth = require("../middlewares/auth");
 const { objectId } = require("../middlewares/validate");
 const { Tour, validateTour } = require("../models/tour");
 
@@ -8,6 +9,7 @@ const router = express.Router();
 
 router.get(
   "/",
+  auth,
   asyncHandler(async (req, res) => {
     const tours = await Tour.find({}).sort("name");
 
@@ -17,6 +19,7 @@ router.get(
 
 router.post(
   "/",
+  auth,
   asyncHandler(async (req, res) => {
     const { error } = validateTour(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -34,7 +37,7 @@ router.post(
 
 router.patch(
   "/:id",
-  objectId,
+  [auth, objectId],
   asyncHandler(async (req, res) => {
     const { error } = validateTour(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -50,7 +53,7 @@ router.patch(
 
 router.delete(
   "/:id",
-  objectId,
+  [auth, objectId],
   asyncHandler(async (req, res) => {
     const tour = await Tour.findOneAndDelete({ _id: req.params.id });
     if (!tour) return res.status(404).send("Invalid Id.");
@@ -61,6 +64,7 @@ router.delete(
 
 router.get(
   "/:slug",
+  auth,
   asyncHandler(async (req, res) => {
     const tour = await Tour.findOne({ slug: req.params.slug });
     if (!tour) return res.status(404).send("Tour not found.");
